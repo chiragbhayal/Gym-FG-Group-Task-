@@ -55,15 +55,15 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start space-x-2">
                 <MapPin className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                <span>123 Muscle Street, Fitness City, FC 90812</span>
+                <span>FG Group, Ripple Mall, 2nd Floor, Above Croma,Dumas Road, Piplod,Surat – 395 007</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                <span>+1 (555) 019-2834</span>
+                <span>+91 98765-43210</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                <span>support@flexfit.com</span>
+                <span>support@fg.com</span>
               </li>
             </ul>
           </div>
