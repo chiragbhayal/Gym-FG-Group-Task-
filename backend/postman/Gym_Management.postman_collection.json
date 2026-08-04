@@ -1,10 +1,63 @@
 {
   "info": {
     "name": "Gym Management API",
-    "description": "Comprehensive API collection for the MERN Gym Management System, covering auth, blogs, products, inquiries, and users.",
+    "description": "Structured Postman collection for the backend gym management API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "adminToken",
+      "value": "replace_with_admin_token"
+    },
+    {
+      "key": "userToken",
+      "value": "replace_with_user_token"
+    },
+    {
+      "key": "blogId",
+      "value": "replace_with_blog_id"
+    },
+    {
+      "key": "productId",
+      "value": "replace_with_product_id"
+    },
+    {
+      "key": "inquiryId",
+      "value": "replace_with_inquiry_id"
+    },
+    {
+      "key": "orderId",
+      "value": "replace_with_order_id"
+    }
+  ],
   "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
     {
       "name": "Authentication",
       "item": [
@@ -23,12 +76,10 @@
               "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/auth/register",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/auth/register",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "auth",
@@ -53,12 +104,10 @@
               "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/auth/login",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/auth/login",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "auth",
@@ -79,12 +128,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/blogs",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/blogs",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "blogs"
@@ -99,16 +146,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/blogs/{{BLOG_ID}}",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/blogs/{{blogId}}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "blogs",
-                "{{BLOG_ID}}"
+                "{{blogId}}"
               ]
             }
           },
@@ -122,7 +167,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -136,15 +181,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Hypertrophy vs Strength\",\n  \"content\": \"Understanding the differences between rep ranges for building maximum muscle density versus pure lifting power.\",\n  \"image\": \"https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800\",\n  \"author\": \"Trainer Alex\"\n}"
+              "raw": "{\n  \"title\": \"Strength vs Hypertrophy\",\n  \"content\": \"A practical guide to balancing heavy lifting and muscle growth.\",\n  \"image\": \"https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800\",\n  \"author\": \"Trainer Alex\"\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/blogs",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/blogs",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "blogs"
@@ -161,7 +204,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -175,19 +218,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Hypertrophy vs Strength (Updated)\",\n  \"content\": \"This article has been updated with new science about fast twitch fibers.\"\n}"
+              "raw": "{\n  \"title\": \"Strength vs Hypertrophy (Updated)\"\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/blogs/{{BLOG_ID}}",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/blogs/{{blogId}}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "blogs",
-                "{{BLOG_ID}}"
+                "{{blogId}}"
               ]
             }
           },
@@ -201,7 +242,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -209,16 +250,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/blogs/{{BLOG_ID}}",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/blogs/{{blogId}}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "blogs",
-                "{{BLOG_ID}}"
+                "{{blogId}}"
               ]
             }
           },
@@ -235,12 +274,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/products",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/products",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "products"
@@ -255,16 +292,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/products/{{PRODUCT_ID}}",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "products",
-                "{{PRODUCT_ID}}"
+                "{{productId}}"
               ]
             }
           },
@@ -278,7 +313,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -292,15 +327,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Micronized Glutamine Recovery\",\n  \"price\": 19.99,\n  \"description\": \"Supports cellular volume and muscle protein repair.\",\n  \"category\": \"Recovery\",\n  \"inStock\": true\n}"
+              "raw": "{\n  \"name\": \"Recovery BCAA\",\n  \"price\": 29.99,\n  \"description\": \"Supports recovery after hard sessions.\",\n  \"category\": \"Recovery\",\n  \"inStock\": true\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/products",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/products",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "products"
@@ -317,7 +350,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -331,19 +364,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"price\": 22.99,\n  \"inStock\": false\n}"
+              "raw": "{\n  \"price\": 32.99,\n  \"inStock\": false\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/products/{{PRODUCT_ID}}",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "products",
-                "{{PRODUCT_ID}}"
+                "{{productId}}"
               ]
             }
           },
@@ -357,7 +388,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -365,16 +396,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/products/{{PRODUCT_ID}}",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "products",
-                "{{PRODUCT_ID}}"
+                "{{productId}}"
               ]
             }
           },
@@ -383,17 +412,17 @@
       ]
     },
     {
-      "name": "Inquiry",
+      "name": "Inquiries",
       "item": [
         {
-          "name": "Create Gym Inquiry (User)",
+          "name": "Create Inquiry (User)",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{USER_JWT_TOKEN}}",
+                  "value": "{{userToken}}",
                   "type": "string"
                 }
               ]
@@ -407,15 +436,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Johnathan Doe\",\n  \"phone\": \"+15551239876\",\n  \"age\": 28,\n  \"goal\": \"Muscle Hypertrophy\",\n  \"message\": \"I want to double my bench press and load up clean muscle. I have 1 year of lifting history.\"\n}"
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"phone\": \"9876543210\",\n  \"age\": 28,\n  \"goal\": \"Lose fat and gain strength\",\n  \"message\": \"I want a beginner-friendly plan.\"\n}"
             },
             "url": {
-              "raw": "http://localhost:5000/api/inquiries",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/inquiries",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "inquiries"
@@ -432,7 +459,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -440,12 +467,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/inquiries",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/inquiries",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "inquiries"
@@ -462,7 +487,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -470,16 +495,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/inquiries/{{INQUIRY_ID}}",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/inquiries/{{inquiryId}}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "inquiries",
-                "{{INQUIRY_ID}}"
+                "{{inquiryId}}"
               ]
             }
           },
@@ -498,7 +521,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{ADMIN_JWT_TOKEN}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -506,15 +529,180 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:5000/api/users",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/users",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "5000",
               "path": [
                 "api",
                 "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order (User)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"replace_with_product_id\",\n  \"address\": \"123 Main Street, City\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Orders (User)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/myorders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "myorders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Shipped\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order (User/Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}"
               ]
             }
           },

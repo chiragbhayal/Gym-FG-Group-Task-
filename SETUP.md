@@ -52,8 +52,8 @@ cd backend
 node seed.js
 ```
 Default Admin Credentials created by seed script:
-- Email: `admin@gym.com`
-- Password: `password123`
+- Email: `admin@gym.com / chirag@gmail.com`
+- Password: `password123 / 123456789`
 
 ### Running Frontend Development Server
 ```bash
