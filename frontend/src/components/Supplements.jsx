@@ -9,7 +9,7 @@ const Supplements = () => {
   useEffect(() => {
     const fetchLatestProducts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products');
+        const res = await fetch('/api/products');
         if (res.ok) {
           const data = await res.json();
           // Take top 3

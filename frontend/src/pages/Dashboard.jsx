@@ -25,37 +25,25 @@ const Dashboard = () => {
   const [productForm, setProductForm] = useState({ name: '', price: '', description: '', category: '', image: '', inStock: true });
   const [blogForm, setBlogForm] = useState({ title: '', content: '', author: '', image: '' });
 
-  // Fetch functions
+  // Fetch functions (Parallelized for performance)
   const fetchData = async () => {
     if (!token || user?.role !== 'admin') return;
     setLoading(true);
     try {
-      // Inquiries
-      const resInq = await fetch('http://localhost:5000/api/inquiries', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const headers = { Authorization: `Bearer ${token}` };
+      const [resInq, resProd, resBlog, resUsers, resOrders] = await Promise.all([
+        fetch('/api/inquiries', { headers }),
+        fetch('/api/products'),
+        fetch('/api/blogs'),
+        fetch('/api/users', { headers }),
+        fetch('/api/orders', { headers })
+      ]);
+
       if (resInq.ok) setInquiries(await resInq.json());
-
-      // Products
-      const resProd = await fetch('http://localhost:5000/api/products');
       if (resProd.ok) setProducts(await resProd.json());
-
-      // Blogs
-      const resBlog = await fetch('http://localhost:5000/api/blogs');
       if (resBlog.ok) setBlogs(await resBlog.json());
-
-      // Users
-      const resUsers = await fetch('http://localhost:5000/api/users', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
       if (resUsers.ok) setUsers(await resUsers.json());
-
-      // Orders
-      const resOrders = await fetch('http://localhost:5000/api/orders', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
       if (resOrders.ok) setOrders(await resOrders.json());
-
     } catch (err) {
       console.error('Error fetching admin data:', err);
     } finally {
@@ -70,7 +58,7 @@ const Dashboard = () => {
   // Actions: Orders
   const handleStatusChange = async (id, status) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${id}/status`, {
+      const res = await fetch(`/api/orders/${id}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +81,7 @@ const Dashboard = () => {
   const handleDeleteInquiry = async (id) => {
     if (!window.confirm('Delete this inquiry?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/inquiries/${id}`, {
+      const res = await fetch(`/api/inquiries/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -131,8 +119,8 @@ const Dashboard = () => {
     setActionError('');
     const method = productModal.isEdit ? 'PUT' : 'POST';
     const url = productModal.isEdit
-      ? `http://localhost:5000/api/products/${productModal.data._id}`
-      : 'http://localhost:5000/api/products';
+      ? `/api/products/${productModal.data._id}`
+      : '/api/products';
 
     try {
       const res = await fetch(url, {
@@ -159,7 +147,7 @@ const Dashboard = () => {
   const handleDeleteProduct = async (id) => {
     if (!window.confirm('Delete this product?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(`/api/products/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -195,8 +183,8 @@ const Dashboard = () => {
     setActionError('');
     const method = blogModal.isEdit ? 'PUT' : 'POST';
     const url = blogModal.isEdit
-      ? `http://localhost:5000/api/blogs/${blogModal.data._id}`
-      : 'http://localhost:5000/api/blogs';
+      ? `/api/blogs/${blogModal.data._id}`
+      : '/api/blogs';
 
     try {
       const res = await fetch(url, {
@@ -223,7 +211,7 @@ const Dashboard = () => {
   const handleDeleteBlog = async (id) => {
     if (!window.confirm('Delete this blog post?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/blogs/${id}`, {
+      const res = await fetch(`/api/blogs/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });

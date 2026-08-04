@@ -9,7 +9,7 @@ const LatestBlogs = () => {
   useEffect(() => {
     const fetchLatestBlogs = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/blogs');
+        const res = await fetch('/api/blogs');
         if (res.ok) {
           const data = await res.json();
           // Take top 3

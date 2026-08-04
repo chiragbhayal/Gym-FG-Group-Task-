@@ -8,7 +8,7 @@ const generateToken = (id) => {
 };
 
 const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -17,8 +17,8 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Set first user ever registered as admin for easy convenience
-    let userRole = role || 'user';
+    // Default role is user; first user registered gets admin for convenience
+    let userRole = 'user';
     const isFirstUser = (await User.countDocuments({})) === 0;
     if (isFirstUser) {
       userRole = 'admin';

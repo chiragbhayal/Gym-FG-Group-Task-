@@ -21,6 +21,15 @@ app.get('/', (req, res) => {
   res.send('Gym Management System API is running...');
 });
 
+// Production-grade Health Check Endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: `${Math.floor(process.uptime())}s`
+  });
+});
+
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
 const blogRoutes = require('./routes/blogRoutes');
@@ -28,6 +37,10 @@ const productRoutes = require('./routes/productRoutes');
 const inquiryRoutes = require('./routes/inquiryRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+
+// Setup Interactive Swagger API Documentation UI
+const setupSwagger = require('./config/swagger');
+setupSwagger(app);
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
@@ -118,11 +131,24 @@ connectDB().then(() => {
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  let message = err.message;
+
+  // Handle Mongoose Invalid ObjectId CastError
+  if (err.name === 'CastError' && err.kind === 'ObjectId') {
+    statusCode = 404;
+    message = 'Resource not found (invalid ID format)';
+  }
+
   res.status(statusCode).json({
-    message: err.message,
+    message: message,
     stack: process.env.NODE_ENV === 'production' ? null : err.stack
   });
+});
+
+// Unhandled Promise Rejection Safety Handler
+process.on('unhandledRejection', (err) => {
+  console.error(`Unhandled Promise Rejection: ${err.message}`);
 });
 
 const PORT = process.env.PORT || 5000;
