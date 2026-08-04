@@ -13,6 +13,11 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
 
+  // Sort Options States
+  const [inqSort, setInqSort] = useState('newest');
+  const [orderSort, setOrderSort] = useState('newest');
+  const [userSort, setUserSort] = useState('nameAsc');
+
   // Loadings & Errors
   const [loading, setLoading] = useState(true);
   const [actionError, setActionError] = useState('');
@@ -71,6 +76,24 @@ const Dashboard = () => {
       } else {
         const data = await res.json();
         setActionError(data.message || 'Failed to update status');
+      }
+    } catch (err) {
+      setActionError(err.message);
+    }
+  };
+
+  const handleDeleteOrder = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this order?')) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setOrders(orders.filter((o) => o._id !== id));
+      } else {
+        const data = await res.json();
+        setActionError(data.message || 'Failed to delete order');
       }
     } catch (err) {
       setActionError(err.message);
@@ -353,12 +376,33 @@ const Dashboard = () => {
             {/* INQUIRIES TAB */}
             {activeTab === 'inquiries' && (
               <div className="space-y-6">
-                <h2 className="text-xl font-bold text-white uppercase tracking-wider">Gym Inquiries List</h2>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <h2 className="text-xl font-bold text-white uppercase tracking-wider">Gym Inquiries List</h2>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Sort By:</span>
+                    <select
+                      value={inqSort}
+                      onChange={(e) => setInqSort(e.target.value)}
+                      className="bg-[#0b0f19] border border-gray-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                      <option value="name">Name (A-Z)</option>
+                    </select>
+                  </div>
+                </div>
                 {inquiries.length === 0 ? (
                   <p className="text-gray-500 text-sm py-8">No user inquiries found.</p>
                 ) : (
                   <div className="grid grid-cols-1 gap-6">
-                    {inquiries.map((inq) => (
+                    {[...inquiries]
+                      .sort((a, b) => {
+                        if (inqSort === 'newest') return new Date(b.createdAt || b.updatedAt) - new Date(a.createdAt || a.updatedAt);
+                        if (inqSort === 'oldest') return new Date(a.createdAt || a.updatedAt) - new Date(b.createdAt || b.updatedAt);
+                        if (inqSort === 'name') return a.name.localeCompare(b.name);
+                        return 0;
+                      })
+                      .map((inq) => (
                       <div key={inq._id} className="bg-[#0b0f19] border border-gray-900 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                         <div className="space-y-3">
                           <div className="flex flex-wrap items-center gap-3">
@@ -536,7 +580,21 @@ const Dashboard = () => {
             {/* USERS TAB */}
             {activeTab === 'users' && (
               <div className="space-y-6">
-                <h2 className="text-xl font-bold text-white uppercase tracking-wider">Registered Accounts</h2>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <h2 className="text-xl font-bold text-white uppercase tracking-wider">Registered Accounts</h2>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Sort By:</span>
+                    <select
+                      value={userSort}
+                      onChange={(e) => setUserSort(e.target.value)}
+                      className="bg-[#0b0f19] border border-gray-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                    >
+                      <option value="nameAsc">Name (A-Z)</option>
+                      <option value="nameDesc">Name (Z-A)</option>
+                      <option value="role">Role</option>
+                    </select>
+                  </div>
+                </div>
                 {users.length === 0 ? (
                   <p className="text-gray-500 text-sm py-8">No registered accounts found.</p>
                 ) : (
@@ -551,7 +609,14 @@ const Dashboard = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-900">
-                        {users.map((u) => (
+                        {[...users]
+                          .sort((a, b) => {
+                            if (userSort === 'nameAsc') return a.name.localeCompare(b.name);
+                            if (userSort === 'nameDesc') return b.name.localeCompare(a.name);
+                            if (userSort === 'role') return a.role.localeCompare(b.role);
+                            return 0;
+                          })
+                          .map((u) => (
                           <tr key={u._id} className="hover:bg-gray-950/20 transition-colors">
                             <td className="px-6 py-4 font-bold text-white">{u.name}</td>
                             <td className="px-6 py-4 text-gray-400">{u.email}</td>
@@ -577,7 +642,23 @@ const Dashboard = () => {
             {/* ORDERS TAB */}
             {activeTab === 'orders' && (
               <div className="space-y-6">
-                <h2 className="text-xl font-bold text-white uppercase tracking-wider">Supplement Orders</h2>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <h2 className="text-xl font-bold text-white uppercase tracking-wider">Supplement Orders</h2>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Sort By:</span>
+                    <select
+                      value={orderSort}
+                      onChange={(e) => setOrderSort(e.target.value)}
+                      className="bg-[#0b0f19] border border-gray-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                      <option value="priceDesc">Price (High to Low)</option>
+                      <option value="priceAsc">Price (Low to High)</option>
+                      <option value="status">Status</option>
+                    </select>
+                  </div>
+                </div>
                 {orders.length === 0 ? (
                   <p className="text-gray-500 text-sm py-8">No product orders found.</p>
                 ) : (
@@ -591,10 +672,20 @@ const Dashboard = () => {
                           <th className="px-6 py-4">Address</th>
                           <th className="px-6 py-4">Date</th>
                           <th className="px-6 py-4">Status</th>
+                          <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-900">
-                        {orders.map((order) => (
+                        {[...orders]
+                          .sort((a, b) => {
+                            if (orderSort === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+                            if (orderSort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+                            if (orderSort === 'priceDesc') return b.price - a.price;
+                            if (orderSort === 'priceAsc') return a.price - b.price;
+                            if (orderSort === 'status') return a.status.localeCompare(b.status);
+                            return 0;
+                          })
+                          .map((order) => (
                           <tr key={order._id} className="hover:bg-gray-950/20 transition-colors">
                             <td className="px-6 py-4">
                               <p className="font-bold text-white">{order.user?.name || 'Deleted User'}</p>
@@ -626,6 +717,15 @@ const Dashboard = () => {
                                 <option value="Shipped">Shipped</option>
                                 <option value="Delivered">Delivered</option>
                               </select>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <button
+                                onClick={() => handleDeleteOrder(order._id)}
+                                className="text-red-500 hover:text-red-400 bg-red-500/10 border border-red-500/20 p-2 rounded-lg transition-colors inline-block"
+                                title="Delete Order"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
                             </td>
                           </tr>
                         ))}

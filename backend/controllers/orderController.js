@@ -75,4 +75,23 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, getMyOrders, getAllOrders, updateOrderStatus };
+const deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Allow user who placed the order or admin to delete it
+    if (req.user.role === 'admin' || order.user.toString() === req.user._id.toString()) {
+      await order.deleteOne();
+      res.json({ message: 'Order deleted successfully' });
+    } else {
+      res.status(403).json({ message: 'Not authorized to delete this order' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { createOrder, getMyOrders, getAllOrders, updateOrderStatus, deleteOrder };

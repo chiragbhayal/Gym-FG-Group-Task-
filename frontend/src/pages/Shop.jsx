@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ShoppingBag, X, CheckCircle, Award } from 'lucide-react';
+import { ShoppingBag, X, CheckCircle, Award, Trash2 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,6 +10,9 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [purchasedProduct, setPurchasedProduct] = useState(null);
   const [error, setError] = useState('');
+
+  // Product search query
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Shipping Address Modal States
   const [addressModalOpen, setAddressModalOpen] = useState(false);
@@ -63,6 +66,27 @@ const Shop = () => {
     }
     fetchMyOrders();
     setMyOrdersOpen(true);
+  };
+
+  const handleDeleteOrder = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel/delete this order?')) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        alert('Order cancelled/deleted successfully!');
+        setMyOrders(myOrders.filter((o) => o._id !== id));
+      } else {
+        const data = await res.json();
+        alert(data.message || 'Failed to delete order');
+      }
+    } catch (err) {
+      alert(err.message || 'Error deleting order');
+    }
   };
 
   const handleBuyClick = (product) => {
@@ -122,15 +146,29 @@ const Shop = () => {
             Fuel your gains with 100% authentic, premium quality protein shakes, amino acids, and strength boosters.
           </p>
           <div className="w-16 h-1 bg-gradient-custom mx-auto rounded-full mt-4 mb-6"></div>
-          {user && (
-            <button
-              onClick={handleMyOrdersClick}
-              className="bg-gray-900 border border-gray-800 hover:bg-gray-800 text-orange-500 hover:text-orange-400 font-bold text-xs px-4 py-2.5 rounded-xl transition-all inline-flex items-center space-x-2"
-            >
-              <ShoppingBag className="h-4 w-4" />
-              <span>View My Orders</span>
-            </button>
-          )}
+          
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            {user && (
+              <button
+                onClick={handleMyOrdersClick}
+                className="bg-gray-900 border border-gray-800 hover:bg-gray-800 text-orange-500 hover:text-orange-400 font-bold text-xs px-4 py-3 rounded-xl transition-all inline-flex items-center space-x-2 w-full sm:w-auto justify-center"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                <span>View My Orders</span>
+              </button>
+            )}
+            
+            <div className="relative w-full sm:w-80">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search supplements by name or category..."
+                className="w-full bg-[#0b0f19] border border-gray-800 focus:border-orange-500 text-white rounded-xl pl-4 pr-10 py-2.5 text-xs focus:outline-none transition-colors"
+              />
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-sm">🔍</span>
+            </div>
+          </div>
         </div>
 
         {loading ? (
@@ -139,7 +177,13 @@ const Shop = () => {
           <div className="text-center py-24 text-gray-500">No supplements are currently in stock. Check back soon!</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {products.map((product) => (
+            {products
+              .filter((p) =>
+                p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()))
+              )
+              .map((product) => (
               <div
                 key={product._id}
                 className="bg-[#0b0f19] border border-gray-900 rounded-2xl p-6 flex flex-col justify-between hover:border-orange-500/30 transition-all duration-300 group"
@@ -344,6 +388,14 @@ const Shop = () => {
                       }`}>
                         {order.status}
                       </span>
+
+                      <button
+                        onClick={() => handleDeleteOrder(order._id)}
+                        className="bg-red-600/10 border border-red-500/20 text-red-400 hover:bg-red-600 hover:text-white p-2 rounded-lg transition-all flex items-center justify-center"
+                        title="Cancel/Delete Order"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
                   </div>
                 ))

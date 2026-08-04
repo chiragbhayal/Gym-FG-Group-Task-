@@ -19,16 +19,16 @@ const Contact = () => {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-orange-500 font-extrabold text-sm uppercase tracking-widest">Contact Us</h2>
           <p className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
-            Have Questions? Get In Touch With Us
+            Get In Touch With Us
           </p>
           <div className="w-16 h-1 bg-gradient-custom mx-auto rounded-full"></div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+        <div className="max-w-2xl mx-auto">
           {/* Info Card */}
-          <div className="bg-[#070b12] border border-gray-900 p-8 rounded-2xl flex flex-col justify-between space-y-8">
+          <div className="bg-[#070b12] border border-gray-900 p-8 rounded-2xl flex flex-col justify-between space-y-8 shadow-xl">
             <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-white uppercase tracking-wide">FLEXFIT HEADQUARTERS</h3>
+              <h3 className="text-2xl font-bold text-white uppercase tracking-wide">FITNESS WITH GOMZI HEADQUARTERS</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
                 Whether you want to learn about memberships, consult on custom personal trainer bookings, or have corporate inquiry questions, we are ready to assist.
               </p>
@@ -41,7 +41,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-white text-sm">Location</h4>
-                  <p className="text-gray-400 text-xs mt-0.5">123 Muscle Street, Fitness City, FC 90812</p>
+                  <p className="text-gray-400 text-xs mt-0.5">FG Group, Ripple Mall, 2nd Floor, Above Croma, Dumas Road, Piplod, Surat – 395 007</p>
                 </div>
               </div>
 
@@ -51,7 +51,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-white text-sm">Phone</h4>
-                  <p className="text-gray-400 text-xs mt-0.5">+1 (555) 019-2834</p>
+                  <p className="text-gray-400 text-xs mt-0.5">+91 98765-43210</p>
                 </div>
               </div>
 
@@ -61,7 +61,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-white text-sm">Email</h4>
-                  <p className="text-gray-400 text-xs mt-0.5">support@flexfit.com</p>
+                  <p className="text-gray-400 text-xs mt-0.5">support@fg.com</p>
                 </div>
               </div>
             </div>
@@ -71,63 +71,6 @@ const Contact = () => {
                 Response time for email inquiries is generally under 24 hours.
               </p>
             </div>
-          </div>
-
-          {/* Contact Form Card */}
-          <div className="bg-[#070b12] border border-gray-900 p-8 rounded-2xl">
-            <h3 className="text-xl font-bold text-white uppercase tracking-wide mb-6">Send A Message</h3>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Name</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Your full name"
-                  className="w-full bg-[#0b0f19] border border-gray-800 focus:border-orange-500 text-white rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="you@example.com"
-                  className="w-full bg-[#0b0f19] border border-gray-800 focus:border-orange-500 text-white rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Message</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="How can we help you?"
-                  className="w-full bg-[#0b0f19] border border-gray-800 focus:border-orange-500 text-white rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors resize-none"
-                ></textarea>
-              </div>
-
-              {success && (
-                <div className="bg-green-600/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-lg text-sm text-center">
-                  Message sent successfully!
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full bg-gradient-custom hover-gradient text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/20"
-              >
-                <span>Send Message</span>
-                <Send className="h-4 w-4" />
-              </button>
-            </form>
           </div>
         </div>
       </div>
