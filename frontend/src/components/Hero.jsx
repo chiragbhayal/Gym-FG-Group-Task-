@@ -26,7 +26,7 @@ const Hero = () => {
           </h1>
 
           <p className="text-gray-400 text-lg sm:text-xl max-w-xl leading-relaxed">
-            FlexFit offers state-of-the-art training facilities, customized fitness plans, elite coaching, and premium supplements to help you smash your physical goals.
+            FlexFit offers state-of-the-art training Fitness With Gomzi, customized fitness plans, elite coaching, and premium supplements to help you smash your physical goals.
             Start your fitness transformation today.
           </p>
 

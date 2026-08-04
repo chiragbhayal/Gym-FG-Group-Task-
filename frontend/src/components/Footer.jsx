@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dumbbell, Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logoImg from '../assets/fg_group.webp';
 
 const Footer = () => {
   return (
@@ -9,12 +10,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand Col */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Dumbbell className="h-7 w-7 text-orange-500" />
-              <span className="text-xl font-black text-white tracking-wider">FLEXFIT</span>
+            <div className="flex items-center space-x-3">
+              <img src={logoImg} alt="FG Group Logo" className="h-9 w-auto rounded object-contain border border-gray-900 bg-[#070b12]" />
+              <span className="text-xl font-black text-white tracking-wider uppercase">Fitness With Gomzi</span>
             </div>
             <p className="text-sm text-gray-500 leading-relaxed">
-              Premium training facilities, elite nutrition products, and expert coaches dedicated to helping you unlock your ultimate physical potential.
+              Premium training Fitness With Gomzi, elite nutrition products, and expert coaches dedicated to helping you unlock your ultimate physical potential.
             </p>
           </div>
 

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Dumbbell, Menu, X, LogOut, User, Lock } from 'lucide-react';
+import logoImg from '../assets/fg_group.webp';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -19,10 +20,10 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
-              <Dumbbell className="h-8 w-8 text-orange-500 animate-pulse" />
-              <span className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                FLEXFIT
+            <Link to="/" className="flex items-center space-x-3.5" onClick={() => setIsOpen(false)}>
+              <img src={logoImg} alt="FG Group Logo" className="h-10 w-auto rounded-lg object-contain border border-gray-800 bg-[#070b12]" />
+              <span className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent uppercase">
+                Fitness With Gomzi
               </span>
             </Link>
           </div>

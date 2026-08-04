@@ -16,7 +16,8 @@ const Gallery = () => {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-orange-500 font-extrabold text-sm uppercase tracking-widest">Our Gallery</h2>
           <p className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
-            Take A Virtual Tour Of Our Premium Facilities
+            Take A Virtual Tour Of Our Premium Fitness With Gomzi
+
           </p>
           <div className="w-16 h-1 bg-gradient-custom mx-auto rounded-full"></div>
         </div>

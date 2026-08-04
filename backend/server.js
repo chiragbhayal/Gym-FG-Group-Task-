@@ -7,8 +7,7 @@ const path = require('path');
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '.env') });
 
-// Connect to Database
-connectDB();
+// Database connection initialized at the bottom of the file after seeder is defined
 
 const app = express();
 
@@ -112,8 +111,10 @@ const seedData = async () => {
   }
 };
 
-// Start seeding
-setTimeout(seedData, 3000);
+// Start seeding after database connection is successful
+connectDB().then(() => {
+  seedData();
+});
 
 // Global Error Handler
 app.use((err, req, res, next) => {
