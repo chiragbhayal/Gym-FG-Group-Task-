@@ -70,7 +70,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-900 pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-600">
-          <p>© {new Date().getFullYear()} FlexFit. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Fitness With Gomzi. All rights reserved.</p>
           <div className="flex space-x-4 mt-4 sm:mt-0">
             <span className="hover:text-gray-400 cursor-pointer">Privacy Policy</span>
             <span className="hover:text-gray-400 cursor-pointer">Terms of Service</span>
