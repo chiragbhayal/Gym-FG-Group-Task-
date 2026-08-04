@@ -2,7 +2,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 
 const createOrder = async (req, res) => {
-  const { productId } = req.body;
+  const { productId, address } = req.body;
   try {
     const product = await Product.findById(productId);
     if (!product) {
@@ -13,10 +13,15 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: 'Product is out of stock' });
     }
 
+    if (!address) {
+      return res.status(400).json({ message: 'Shipping address is required' });
+    }
+
     const order = new Order({
       user: req.user._id,
       product: productId,
       price: product.price,
+      address,
       status: 'Pending'
     });
 

@@ -592,6 +592,7 @@ const Dashboard = () => {
                           <th className="px-6 py-4">User</th>
                           <th className="px-6 py-4">Product</th>
                           <th className="px-6 py-4">Price</th>
+                          <th className="px-6 py-4">Address</th>
                           <th className="px-6 py-4">Date</th>
                           <th className="px-6 py-4">Status</th>
                         </tr>
@@ -617,6 +618,7 @@ const Dashboard = () => {
                               </div>
                             </td>
                             <td className="px-6 py-4 font-bold text-orange-500">${order.price?.toFixed(2)}</td>
+                            <td className="px-6 py-4 text-xs text-gray-300 max-w-[200px] truncate" title={order.address}>{order.address}</td>
                             <td className="px-6 py-4 text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
                             <td className="px-6 py-4">
                               <select

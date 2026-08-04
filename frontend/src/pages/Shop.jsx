@@ -11,6 +11,16 @@ const Shop = () => {
   const [purchasedProduct, setPurchasedProduct] = useState(null);
   const [error, setError] = useState('');
 
+  // Shipping Address Modal States
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // User's Order List States
+  const [myOrders, setMyOrders] = useState([]);
+  const [myOrdersOpen, setMyOrdersOpen] = useState(false);
+  const [fetchingOrders, setFetchingOrders] = useState(false);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -28,10 +38,47 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const handleBuy = async (product) => {
+  const fetchMyOrders = async () => {
+    if (!token) return;
+    setFetchingOrders(true);
+    try {
+      const res = await fetch('http://localhost:5000/api/orders/myorders', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setMyOrders(await res.json());
+      }
+    } catch (err) {
+      console.error('Error fetching user orders:', err);
+    } finally {
+      setFetchingOrders(false);
+    }
+  };
+
+  const handleMyOrdersClick = () => {
+    if (!user) {
+      alert('You must be logged in to view your orders.');
+      navigate('/login');
+      return;
+    }
+    fetchMyOrders();
+    setMyOrdersOpen(true);
+  };
+
+  const handleBuyClick = (product) => {
     if (!user) {
       alert('You must be logged in to purchase supplements.');
       navigate('/login');
+      return;
+    }
+    setSelectedProduct(product);
+    setAddressModalOpen(true);
+  };
+
+  const handleConfirmPurchase = async (e) => {
+    e.preventDefault();
+    if (!shippingAddress.trim()) {
+      alert('Please enter a valid shipping address.');
       return;
     }
     setError('');
@@ -43,13 +90,16 @@ const Shop = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ productId: product._id })
+        body: JSON.stringify({ productId: selectedProduct._id, address: shippingAddress })
       });
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || 'Order placement failed');
       }
-      setPurchasedProduct(product);
+      setPurchasedProduct(selectedProduct);
+      setAddressModalOpen(false);
+      setShippingAddress('');
+      fetchMyOrders();
     } catch (err) {
       alert(err.message || 'Failed to place order');
     }
@@ -71,7 +121,16 @@ const Shop = () => {
           <p className="text-gray-400 text-sm max-w-lg mx-auto">
             Fuel your gains with 100% authentic, premium quality protein shakes, amino acids, and strength boosters.
           </p>
-          <div className="w-16 h-1 bg-gradient-custom mx-auto rounded-full mt-4"></div>
+          <div className="w-16 h-1 bg-gradient-custom mx-auto rounded-full mt-4 mb-6"></div>
+          {user && (
+            <button
+              onClick={handleMyOrdersClick}
+              className="bg-gray-900 border border-gray-800 hover:bg-gray-800 text-orange-500 hover:text-orange-400 font-bold text-xs px-4 py-2.5 rounded-xl transition-all inline-flex items-center space-x-2"
+            >
+              <ShoppingBag className="h-4 w-4" />
+              <span>View My Orders</span>
+            </button>
+          )}
         </div>
 
         {loading ? (
@@ -112,7 +171,7 @@ const Shop = () => {
                   
                   {product.inStock ? (
                     <button
-                      onClick={() => handleBuy(product)}
+                      onClick={() => handleBuyClick(product)}
                       className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs px-3 py-2 rounded-lg transition-colors flex items-center space-x-1"
                     >
                       <ShoppingBag className="h-4 w-4" />
@@ -171,6 +230,125 @@ const Shop = () => {
             >
               Continue Shopping
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Address Prompt Modal */}
+      {addressModalOpen && selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070b12]/80 backdrop-blur-md">
+          <div className="w-full max-w-md glass border border-gray-800 p-8 rounded-2xl relative shadow-2xl space-y-6">
+            <button
+              onClick={() => setAddressModalOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-gray-900 border border-gray-800 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <div className="space-y-2 text-center">
+              <h3 className="text-xl font-black text-white uppercase tracking-tight">Delivery Address</h3>
+              <p className="text-xs text-gray-500">Provide shipping details to complete supplement order</p>
+            </div>
+
+            <div className="bg-[#0b0f19] border border-gray-900 p-4 rounded-xl flex items-center justify-between text-xs">
+              <span className="text-gray-400">Item: <strong>{selectedProduct.name}</strong></span>
+              <span className="font-black text-orange-500">${selectedProduct.price.toFixed(2)}</span>
+            </div>
+
+            <form onSubmit={handleConfirmPurchase} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Shipping Address</label>
+                <textarea
+                  required
+                  rows={3}
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  placeholder="Enter your street, house number, city, and zip code..."
+                  className="w-full bg-[#0b0f19] border border-gray-800 focus:border-orange-500 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none transition-colors resize-none"
+                ></textarea>
+               </div>
+
+              <div className="flex justify-end space-x-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setAddressModalOpen(false)}
+                  className="bg-gray-900 border border-gray-800 hover:bg-gray-800 text-white font-semibold text-xs px-4 py-2.5 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors"
+                >
+                  Confirm Order
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* User Orders Status Drawer/Modal */}
+      {myOrdersOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070b12]/80 backdrop-blur-md">
+          <div className="w-full max-w-2xl glass border border-gray-800 p-6 sm:p-8 rounded-2xl relative shadow-2xl max-h-[85vh] flex flex-col">
+            <button
+              onClick={() => setMyOrdersOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-gray-900 border border-gray-800 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <div className="space-y-2 text-center mb-6">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight">My Supplements Orders</h3>
+              <p className="text-xs text-gray-500">Track shipping & delivery status of your purchases</p>
+            </div>
+
+            <div className="overflow-y-auto space-y-4 flex-grow pr-2">
+              {fetchingOrders ? (
+                <p className="text-center text-xs text-gray-500 py-8">Fetching order records...</p>
+              ) : myOrders.length === 0 ? (
+                <p className="text-center text-xs text-gray-500 py-8">You haven't placed any orders yet.</p>
+              ) : (
+                myOrders.map((order) => (
+                  <div
+                    key={order._id}
+                    className="bg-[#0b0f19] border border-gray-900 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs"
+                  >
+                    <div className="flex items-center space-x-3">
+                      {order.product?.image && (
+                        <img
+                          src={order.product.image}
+                          alt={order.product.name}
+                          className="w-12 h-12 object-cover rounded-lg border border-gray-800"
+                        />
+                      )}
+                      <div>
+                        <p className="font-bold text-white uppercase tracking-wide text-sm">{order.product?.name || 'Deleted Product'}</p>
+                        <p className="text-gray-500 mt-1">
+                          Address: <span className="text-gray-300 italic">{order.address}</span>
+                        </p>
+                        <p className="text-[10px] text-gray-500 mt-0.5">Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
+                      <span className="font-extrabold text-orange-500 text-sm">${order.price?.toFixed(2)}</span>
+                      
+                      <span className={`text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded border ${
+                        order.status === 'Pending'
+                          ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20 animate-pulse'
+                          : order.status === 'Shipped'
+                          ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                          : 'bg-green-500/10 text-green-400 border-green-500/20'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}
