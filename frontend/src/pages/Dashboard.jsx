@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Lock, FileText, ShoppingBag, Mail, Users, Plus, Trash2, Edit2, Check, AlertCircle } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, token } = useContext(AuthContext);
+  const { user, token, loading: authLoading } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('inquiries');
 
   // Lists
@@ -237,6 +237,14 @@ const Dashboard = () => {
       setActionError(err.message);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center">
+        <div className="text-orange-500 text-lg font-semibold animate-pulse">Verifying Credentials...</div>
+      </div>
+    );
+  }
 
   if (!user || user.role !== 'admin') {
     return (

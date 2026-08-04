@@ -4,7 +4,7 @@ import { Lock, Send, CheckCircle, Flame } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Inquiry = () => {
-  const { user, token } = useContext(AuthContext);
+  const { user, token, loading: authLoading } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     phone: '',
@@ -50,6 +50,14 @@ const Inquiry = () => {
       setLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center">
+        <div className="text-orange-500 text-lg font-semibold animate-pulse">Verifying Credentials...</div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
