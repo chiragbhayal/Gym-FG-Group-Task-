@@ -11,4 +11,11 @@ const inquirySchema = new mongoose.Schema({
   timestamps: true
 });
 
+inquirySchema.pre('find', function (next) {
+  this.sort({ createdAt: -1 });
+  next();
+});
+
+inquirySchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model('Inquiry', inquirySchema);

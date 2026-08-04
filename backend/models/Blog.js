@@ -9,4 +9,11 @@ const blogSchema = new mongoose.Schema({
   timestamps: true
 });
 
+blogSchema.pre('find', function (next) {
+  this.sort({ createdAt: -1 });
+  next();
+});
+
+blogSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model('Blog', blogSchema);

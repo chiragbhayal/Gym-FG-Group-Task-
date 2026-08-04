@@ -10,4 +10,11 @@ const orderSchema = new mongoose.Schema({
   timestamps: true
 });
 
+orderSchema.pre('find', function (next) {
+  this.sort({ createdAt: -1 });
+  next();
+});
+
+orderSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model('Order', orderSchema);

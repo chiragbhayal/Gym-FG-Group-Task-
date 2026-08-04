@@ -15,8 +15,10 @@ const Dashboard = () => {
 
   // Sort Options States
   const [inqSort, setInqSort] = useState('newest');
+  const [productSort, setProductSort] = useState('newest');
+  const [blogSort, setBlogSort] = useState('newest');
   const [orderSort, setOrderSort] = useState('newest');
-  const [userSort, setUserSort] = useState('nameAsc');
+  const [userSort, setUserSort] = useState('newest');
 
   // Loadings & Errors
   const [loading, setLoading] = useState(true);
@@ -440,15 +442,27 @@ const Dashboard = () => {
             {/* PRODUCTS TAB */}
             {activeTab === 'products' && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <h2 className="text-xl font-bold text-white uppercase tracking-wider">Supplements Stock</h2>
-                  <button
-                    onClick={openProductCreate}
-                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 text-sm"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span>Add Supplement</span>
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Sort By:</span>
+                    <select
+                      value={productSort}
+                      onChange={(e) => setProductSort(e.target.value)}
+                      className="bg-[#0b0f19] border border-gray-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                      <option value="name">Name (A-Z)</option>
+                    </select>
+                    <button
+                      onClick={openProductCreate}
+                      className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 text-sm"
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Supplement</span>
+                    </button>
+                  </div>
                 </div>
 
                 {products.length === 0 ? (
@@ -466,7 +480,14 @@ const Dashboard = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-900">
-                        {products.map((product) => (
+                        {[...products]
+                          .sort((a, b) => {
+                            if (productSort === 'newest') return new Date(b.createdAt || b.updatedAt) - new Date(a.createdAt || a.updatedAt);
+                            if (productSort === 'oldest') return new Date(a.createdAt || a.updatedAt) - new Date(b.createdAt || b.updatedAt);
+                            if (productSort === 'name') return a.name.localeCompare(b.name);
+                            return 0;
+                          })
+                          .map((product) => (
                           <tr key={product._id} className="hover:bg-gray-950/20 transition-colors">
                             <td className="px-6 py-4 flex items-center space-x-3">
                               <img
@@ -514,15 +535,27 @@ const Dashboard = () => {
             {/* BLOGS TAB */}
             {activeTab === 'blogs' && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <h2 className="text-xl font-bold text-white uppercase tracking-wider">Blog Articles</h2>
-                  <button
-                    onClick={openBlogCreate}
-                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 text-sm"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span>Add Blog Post</span>
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Sort By:</span>
+                    <select
+                      value={blogSort}
+                      onChange={(e) => setBlogSort(e.target.value)}
+                      className="bg-[#0b0f19] border border-gray-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                      <option value="title">Title (A-Z)</option>
+                    </select>
+                    <button
+                      onClick={openBlogCreate}
+                      className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 text-sm"
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Add Blog Post</span>
+                    </button>
+                  </div>
                 </div>
 
                 {blogs.length === 0 ? (
@@ -539,7 +572,14 @@ const Dashboard = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-900">
-                        {blogs.map((blog) => (
+                        {[...blogs]
+                          .sort((a, b) => {
+                            if (blogSort === 'newest') return new Date(b.createdAt || b.updatedAt) - new Date(a.createdAt || a.updatedAt);
+                            if (blogSort === 'oldest') return new Date(a.createdAt || a.updatedAt) - new Date(b.createdAt || b.updatedAt);
+                            if (blogSort === 'title') return a.title.localeCompare(b.title);
+                            return 0;
+                          })
+                          .map((blog) => (
                           <tr key={blog._id} className="hover:bg-gray-950/20 transition-colors">
                             <td className="px-6 py-4 flex items-center space-x-3">
                               <img
@@ -589,6 +629,8 @@ const Dashboard = () => {
                       onChange={(e) => setUserSort(e.target.value)}
                       className="bg-[#0b0f19] border border-gray-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
                     >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
                       <option value="nameAsc">Name (A-Z)</option>
                       <option value="nameDesc">Name (Z-A)</option>
                       <option value="role">Role</option>
@@ -611,6 +653,8 @@ const Dashboard = () => {
                       <tbody className="divide-y divide-gray-900">
                         {[...users]
                           .sort((a, b) => {
+                            if (userSort === 'newest') return new Date(b.createdAt || b.updatedAt) - new Date(a.createdAt || a.updatedAt);
+                            if (userSort === 'oldest') return new Date(a.createdAt || a.updatedAt) - new Date(b.createdAt || b.updatedAt);
                             if (userSort === 'nameAsc') return a.name.localeCompare(b.name);
                             if (userSort === 'nameDesc') return b.name.localeCompare(a.name);
                             if (userSort === 'role') return a.role.localeCompare(b.role);

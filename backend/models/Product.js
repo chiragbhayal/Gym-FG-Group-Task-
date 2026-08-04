@@ -11,4 +11,11 @@ const productSchema = new mongoose.Schema({
   timestamps: true
 });
 
+productSchema.pre('find', function (next) {
+  this.sort({ createdAt: -1 });
+  next();
+});
+
+productSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model('Product', productSchema);
