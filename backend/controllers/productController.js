@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const mongoose = require('mongoose');
 
 const getProducts = async (req, res) => {
   try {
@@ -11,6 +12,9 @@ const getProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid product ID format' });
+    }
     const product = await Product.findById(req.params.id);
     if (product) {
       res.json(product);
@@ -43,6 +47,9 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { name, price, description, image, category, inStock } = req.body;
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid product ID format' });
+    }
     const product = await Product.findById(req.params.id);
     if (product) {
       product.name = name || product.name;
@@ -64,6 +71,9 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid product ID format' });
+    }
     const product = await Product.findById(req.params.id);
     if (product) {
       await product.deleteOne();

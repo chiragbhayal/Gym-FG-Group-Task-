@@ -1,4 +1,5 @@
 const Blog = require('../models/Blog');
+const mongoose = require('mongoose');
 
 const getBlogs = async (req, res) => {
   try {
@@ -11,6 +12,9 @@ const getBlogs = async (req, res) => {
 
 const getBlogById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid blog ID format' });
+    }
     const blog = await Blog.findById(req.params.id);
     if (blog) {
       res.json(blog);
@@ -41,6 +45,9 @@ const createBlog = async (req, res) => {
 const updateBlog = async (req, res) => {
   const { title, content, image, author } = req.body;
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid blog ID format' });
+    }
     const blog = await Blog.findById(req.params.id);
     if (blog) {
       blog.title = title || blog.title;
@@ -60,6 +67,9 @@ const updateBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid blog ID format' });
+    }
     const blog = await Blog.findById(req.params.id);
     if (blog) {
       await blog.deleteOne();
